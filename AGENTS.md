@@ -44,3 +44,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - 자동 코드 리뷰는 최대 1회, 가장 낮은 강도(`code-review low`)로만 돌린다. 리뷰어를 못 부르면 그 사실만 적고 완료로 본다.
 - 지적 중 스펙의 수용 기준을 깨거나 주 경로가 실제로 깨지는 것만 고친다. 나머지는 `docs/follow-ups/`에 한 줄로 남긴다. 재리뷰는 하지 않는다.
 - 스펙이 요구하지 않은 보안 하드닝·엣지케이스·성능 방어는 범위 밖이다.
+
+<!-- BEGIN:stack-context gyeonggi-data-dream -->
+
+# 경기데이터드림 Open API
+
+- 인기 순위 데이터는 경기데이터드림의 "경기도 공공-지역 도서관 인기대출도서 현황" Open API(`https://openapi.gg.go.kr/Poplitloanbook`)를 쓴다. 공식 skill, MCP, `llms.txt`는 없다.
+- 이 API를 다루는 작업을 시작할 때는 공식 데이터셋 페이지(https://data.gg.go.kr 에서 "경기도 공공-지역 도서관 인기대출도서 현황" 검색 → Open API 탭)의 요청 인자, 출력값, 명세서를 그때 다시 확인하고, 코드가 쓰는 필드와 맞춰 본다. 명세를 이 저장소에 복사해 두지 않는다.
+- 인증키는 서버에서만 쓰고 브라우저로 보내지 않는다. 키 값을 커밋하지 않는다.
+- `curl` 기본 User-Agent로 부르면 데이터 대신 "보안 정책에 의해 차단" HTML이 온다. Node `fetch`나 브라우저 User-Agent로는 정상 응답한다(2026-10-22 확인).
+
+<!-- END:stack-context gyeonggi-data-dream -->
