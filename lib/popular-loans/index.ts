@@ -6,6 +6,7 @@ const MAX_RANK = 500;
 export type PopularLoan = {
   rank: number;
   title: string;
+  volume: number | null;
   author: string;
   coverUrl: string | null;
 };
@@ -27,6 +28,8 @@ type Row = {
   RKI_NO: number;
   BOOK_NM_INFO: string;
   AUTHOR_NM_INFO: string;
+  // Series of the same title differ only here (e.g. 흔한남매 1-22).
+  VOLM_CNT?: number | null;
   BOOK_IMAGE_URL: string | null;
 };
 
@@ -90,6 +93,7 @@ export async function getLatestPopularLoans(): Promise<PopularLoanRanking | null
     .map((r) => ({
       rank: r.RKI_NO,
       title: cleanTitle(r.BOOK_NM_INFO),
+      volume: r.VOLM_CNT ?? null,
       author: r.AUTHOR_NM_INFO,
       coverUrl: r.BOOK_IMAGE_URL || null,
     }));

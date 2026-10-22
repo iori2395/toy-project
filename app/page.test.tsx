@@ -12,7 +12,7 @@ function respondWith(body: unknown) {
   );
 }
 
-function rankingBody(rows: Array<[number, string, string]>) {
+function rankingBody(rows: Array<[number, string, string, (number | null)?]>) {
   return {
     Poplitloanbook: [
       {
@@ -22,11 +22,12 @@ function rankingBody(rows: Array<[number, string, string]>) {
         ],
       },
       {
-        row: rows.map(([rank, title, author]) => ({
+        row: rows.map(([rank, title, author, volume = null]) => ({
           STD_YM: "202608",
           RKI_NO: rank,
           BOOK_NM_INFO: title,
           AUTHOR_NM_INFO: author,
+          VOLM_CNT: volume,
           BOOK_IMAGE_URL: null,
         })),
       },
@@ -61,6 +62,23 @@ test("홈 화면은 기준 달과 함께 인기 대출 도서를 순위대로 �
   expect(items[0]).toHaveTextContent("지은이: 한강");
   expect(items[0]).not.toHaveTextContent("장편소설");
   expect(items[1]).toHaveTextContent("안녕이라 그랬어");
+});
+
+test("권차가 있는 책은 제목 옆에 권차를 보여 같은 제목의 다른 권을 구별한다", async () => {
+  respondWith(
+    rankingBody([
+      [7, "흔한남매", "원작: 흔한남매", 19],
+      [8, "흔한남매", "원작: 흔한남매", 15],
+      [9, "소년이 온다 :한강 장편소설", "지은이: 한강"],
+    ]),
+  );
+
+  render(await Home());
+
+  const titles = within(screen.getByRole("list"))
+    .getAllByRole("listitem")
+    .map((item) => item.querySelector("[data-slot=item-title]")?.textContent);
+  expect(titles).toEqual(["흔한남매 19", "흔한남매 15", "소년이 온다"]);
 });
 
 test("순위 데이터가 없으면 빈 목록 대신 결과가 없다고 안내한다", async () => {

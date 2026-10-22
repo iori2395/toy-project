@@ -65,7 +65,12 @@ export default async function Home() {
                 )}
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{book.title}</ItemTitle>
+                <ItemTitle>
+                  {book.title}
+                  {book.volume !== null && (
+                    <span className="font-normal text-muted-foreground"> {book.volume}</span>
+                  )}
+                </ItemTitle>
                 <ItemDescription>{book.author}</ItemDescription>
               </ItemContent>
             </Item>

@@ -7,6 +7,7 @@ type Row = {
   RKI_NO: number;
   BOOK_NM_INFO: string;
   AUTHOR_NM_INFO: string;
+  VOLM_CNT?: number | null;
   BOOK_IMAGE_URL: string | null;
 };
 
@@ -73,12 +74,29 @@ test("가장 최근 기준 달의 순위만 1위부터 돌려준다", async () =
       {
         rank: 1,
         title: "소년이 온다",
+        volume: null,
         author: "지은이: 저자1",
         coverUrl: "https://image.example/cover.jpg",
       },
-      { rank: 2, title: "안녕이라 그랬어", author: "지은이: 저자2", coverUrl: null },
+      { rank: 2, title: "안녕이라 그랬어", volume: null, author: "지은이: 저자2", coverUrl: null },
     ],
   });
+});
+
+test("권차가 있으면 함께 돌려주고 없으면 null로 둔다", async () => {
+  respondWith(
+    okBody(2, [
+      { ...row("202608", 1, "흔한남매"), VOLM_CNT: 19 },
+      { ...row("202608", 2, "불편한 편의점 :김호연 장편소설"), VOLM_CNT: null },
+    ]),
+  );
+
+  const ranking = await getLatestPopularLoans();
+
+  expect(ranking?.books.map((b) => [b.title, b.volume])).toEqual([
+    ["흔한남매", 19],
+    ["불편한 편의점", null],
+  ]);
 });
 
 test("500위까지만 돌려주고 공동 순위는 같은 순위로 모두 남긴다", async () => {
