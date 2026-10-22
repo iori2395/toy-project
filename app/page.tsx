@@ -1,9 +1,15 @@
 import Image from "next/image";
-import { ArrowUpRightIcon, TriangleIcon } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRightIcon, LogInIcon, SettingsIcon, TriangleIcon } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const signedIn = Boolean(data?.claims);
+
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 py-24">
       <div className="flex w-full max-w-xl flex-col gap-10">
@@ -42,6 +48,17 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
+          {signedIn ? (
+            <Link className={buttonVariants({ size: "lg" })} href="/settings">
+              <SettingsIcon data-icon="inline-start" />
+              설정
+            </Link>
+          ) : (
+            <Link className={buttonVariants({ size: "lg" })} href="/login">
+              <LogInIcon data-icon="inline-start" />
+              로그인
+            </Link>
+          )}
           <a
             className={buttonVariants({ size: "lg" })}
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
