@@ -20,7 +20,7 @@ export async function createClient() {
             );
           } catch {
             // Called from a Server Component, which cannot set cookies.
-            // Safe to ignore because proxy.ts refreshes the session.
+            // Safe to ignore while the app has no signed-in sessions.
           }
         },
       },
